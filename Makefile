@@ -1,0 +1,1 @@
+serve-rest: go run ./cmd/... -c=./config serve-rest
