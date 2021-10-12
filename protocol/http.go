@@ -2,6 +2,10 @@ package protocol
 
 import (
 	"hexagonal-template/config"
+	"hexagonal-template/internal/core/service"
+	"hexagonal-template/internal/handler"
+	"hexagonal-template/internal/repository"
+	"hexagonal-template/pkg/validators"
 	"log"
 	"os"
 	"os/signal"
@@ -27,11 +31,18 @@ func ServeRest(cfgPath, env string) error {
 	if !config.GetViper().IsInited() {
 		config.Init(cfgPath, env)
 	}
-
 	err := app.Listen(":" + config.GetViper().App.Port)
 	if err != nil {
 		return err
 	}
+	repo := repository.NewPostgres()
+	svc := service.New(repo)
+	vld := validators.New()
+	hdl := handler.NewHttp(svc, vld)
+
+	// example
+	app.Get("/", hdl.SomeHandler)
+
 	// gracefully shuts down  ...
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)

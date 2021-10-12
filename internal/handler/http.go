@@ -3,16 +3,21 @@ package handler
 import (
 	"hexagonal-template/internal/core/domain"
 	"hexagonal-template/internal/core/port"
+	"hexagonal-template/pkg/validators"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type HttpHandler struct {
-	svc port.Service
+	svc        port.Service
+	validators validators.Validators
 }
 
-func NewHttp(svc port.Service) *HttpHandler {
-	return &HttpHandler{svc: svc}
+func NewHttp(svc port.Service, validators validators.Validators) *HttpHandler {
+	return &HttpHandler{
+		svc:        svc,
+		validators: validators,
+	}
 }
 
 /*

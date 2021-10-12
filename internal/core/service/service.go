@@ -24,4 +24,6 @@ func New(repository port.Repository) *Service {
 	}
 }
 
-func (svc *Service) SomeBusinessLogic(request domain.BusinessLogicRequest) error { return nil }
+func (svc *Service) SomeBusinessLogic(request domain.BusinessLogicRequest) error {
+	return svc.repository.SomeFunction()
+}

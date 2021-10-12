@@ -10,4 +10,6 @@ package domain
 	|
 */
 
-type BusinessLogicRequest struct{}
+type BusinessLogicRequest struct {
+	Name string `validate:"gt=10"`
+}
