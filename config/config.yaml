@@ -1,3 +1,3 @@
 app:
-  debug: true
-  port: 8080
+  debug: APP_DEBUG
+  port: APP_PORT
