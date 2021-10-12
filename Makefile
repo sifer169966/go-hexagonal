@@ -9,10 +9,7 @@ else
 	echo ".env file not found, it will run on .env.example instead."
 	$(eval export $(shell sed 's/=.*//' .env.example))
 endif
-	
 
 serve-rest: inject-env
 	go run ./cmd/... -c=./config serve-rest
 
-my-test:
-	echo $(wildcard .env.example)
