@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"reflect"
 	"strings"
@@ -14,7 +15,7 @@ type Config struct {
 }
 
 type App struct {
-	Debug string `mapstructure:"debug"`
+	Debug bool   `mapstructure:"debug"`
 	Port  string `mapstructure:"port"`
 }
 
@@ -28,18 +29,15 @@ func Init(cfgPath, env string) {
 	switch env {
 	case "local":
 		viper.SetConfigName("config.local")
-		break
 	case "develop":
 		viper.SetConfigName("config.develop")
-		break
 	default:
 		viper.SetConfigName("config")
-		break
 	}
-
 	viper.AddConfigPath(cfgPath)
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.SetConfigType("yaml")
 	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(err)
@@ -48,6 +46,7 @@ func Init(cfgPath, env string) {
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		log.Println("Config file has changed: ", e.Name)
 	})
+	fmt.Println("your port is ", viper.GetString("app.port"))
 	err = viper.Unmarshal(&config)
 	if err != nil {
 		log.Fatalln(err)

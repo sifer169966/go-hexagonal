@@ -31,6 +31,7 @@ func ServeRest(cfgPath, env string) error {
 	if !config.GetViper().IsInited() {
 		config.Init(cfgPath, env)
 	}
+
 	err := app.Listen(":" + config.GetViper().App.Port)
 	if err != nil {
 		return err
