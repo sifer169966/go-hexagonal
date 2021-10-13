@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"reflect"
 	"strings"
@@ -46,7 +45,6 @@ func Init(cfgPath, env string) {
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		log.Println("Config file has changed: ", e.Name)
 	})
-	fmt.Println("your port is ", viper.GetString("app.port"))
 	err = viper.Unmarshal(&config)
 	if err != nil {
 		log.Fatalln(err)
