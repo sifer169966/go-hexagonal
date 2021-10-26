@@ -1,4 +1,4 @@
-inject-env:
+-inject-env:
 # use .env file if it exist
 ifneq ("$(wildcard .env)","")
 	$(eval -include .env)
