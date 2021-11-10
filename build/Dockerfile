@@ -1,40 +1,49 @@
 # Defining App builder image
-FROM golang:alpine AS builder
+FROM golang:1.17-alpine3.14 AS builder
 
-ARG VERSION=unversioned
-ARG PRIVATE_KEY
-
-# Add git to determine build git version
-RUN apk add --no-cache --update git openssh
-
-# Set GOPATH to build Go app
-ENV GOPATH=/go
-
-# Set apps source directory
-ENV SRC_DIR=${GOPATH}/src/github.com/hex-gonal-template
 
 # Define current working directory
-WORKDIR ${SRC_DIR}
+WORKDIR /app
 
-# Copy apps scource code to the image
-COPY . ${SRC_DIR}
+RUN apk update; \
+    apk add --no-cache \
+    git \
+    make
+# turn on go module
+ENV GO111MODULE on
 
-# Setup environment
-RUN ["chmod", "+x","./setup.sh"]
+# Setup build environments
+# CGO_ENABLED=0
+# for cross-compilation is because we should use the go
+# built-in support of the target platform cross-compilation
+# and there should be no reason not to do so.
+# GOOS=linux
+# use the linux operation system for build
+# - GOARCH=arm64
+# use the arm64 as the CPU architecture
+ENV CGO_ENABLED=0
+ENV GOOS=linux
+ENV GOARCH=arm64
+
+# Retrieve application dependencies.
+# This allows the container build to reuse cached dependencies.
+COPY go.mod .
+COPY go.sum .
+
+COPY . ./
 
 # Build App
-RUN go mod verify && \
-go mod vendor && \
-go fmt ./... && \
-go install -v -ldflags="-X ${REPO_PATH}/version.Version=${VERSION}" ./cmd/...
+RUN make ci && make build
 
 # Defining App image
-FROM alpine:latest
+FROM alpine:3.14 as release
 
-RUN apk add --no-cache --update ca-certificates
+RUN apk add --no-cache --update ca-certificates \
+    make
 
 # Copy App binary to image
-COPY --from=builder /go/src/github.com/hex-gonal-template/config/*.yaml /app/config/
-COPY --from=builder /go/bin/cmd /usr/local/bin/cmd
+COPY --from=builder /app/go-hex /app/cmd/
 
-ENTRYPOINT ["cmd"]
+WORKDIR /app
+
+CMD ["cmd/go-hex", "serve-rest"]

@@ -1,15 +1,15 @@
-package main
+package cmds
 
 import (
-	"fmt"
-	"os"
+	"hexagonal-template/protocol"
 
 	"github.com/spf13/cobra"
 )
 
 // Version defines version
-const (
-	Version = "unversioned"
+var (
+	Version   = "unknown version"
+	GoVersion = "unknow go version"
 )
 
 /*
@@ -24,21 +24,20 @@ const (
 
 // rootCmd is the root of all sub commands in the binary
 // it doesn't have a Run method as it executes other sub commands
-var rootCommand = &cobra.Command{
+var rootCmd = &cobra.Command{
 	Use:     "user task",
 	Short:   "task manages user task",
 	Version: Version,
 }
-var cfgPath string
-var env string
 
-func main() {
-	if err := rootCommand.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+func Execute() {
+	cobra.CheckErr(rootCmd.Execute())
 }
 
 func init() {
-	rootCommand.AddCommand(serveRestCommand)
+
+	// Here you will define your flags and configuration settings.
+	// Cobra supports persistent flags, which, if defined here,
+	// will be global for your application.
+	rootCmd.PersistentFlags().StringVarP(&protocol.CfgPath, "config", "c", ".", "config file path")
 }

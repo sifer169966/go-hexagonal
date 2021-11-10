@@ -1,14 +1,14 @@
 package validators
 
-type Validators interface {
+type Validator interface {
 	ValidateSomeField(inf interface{}) error
 }
-type validators struct{}
+type validator struct{}
 
-func New() Validators {
-	return &validators{}
+func New() Validator {
+	return &validator{}
 }
 
-func (vld *validators) ValidateSomeField(inf interface{}) error {
+func (vld *validator) ValidateSomeField(inf interface{}) error {
 	return nil
 }

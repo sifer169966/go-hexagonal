@@ -2,54 +2,44 @@ package config
 
 import (
 	"log"
-	"reflect"
-	"strings"
+
+	"hexagonal-template/pkg/logger"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
+// ",squash" will ignore mapstructure for that field
+
 type Config struct {
-	App `mapstructure:"app"`
+	App appConfig `mapstructure:",squash"`
 }
 
-type App struct {
-	Debug bool   `mapstructure:"debug"`
-	Port  string `mapstructure:"port"`
+type appConfig struct {
+	HTTPPort string `mapstructure:"APP_HTTP_PORT"`
+	Env      string `mapstructure:"APP_ENV"`
 }
 
 var config Config
 
-func (cfg Config) IsInited() bool {
-	return !reflect.DeepEqual(cfg, Config{})
-}
+func Init(cfgPath string) {
 
-func Init(cfgPath, env string) {
-	switch env {
-	case "local":
-		viper.SetConfigName("config.local")
-	case "develop":
-		viper.SetConfigName("config.develop")
-	default:
-		viper.SetConfigName("config")
-	}
-	viper.AddConfigPath(cfgPath)
-	viper.SetConfigType("yaml")
+	viper.SetConfigName(".env")
+	viper.AddConfigPath(".")
+	viper.SetConfigType("env")
 	viper.AutomaticEnv()
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(err)
 	}
 	viper.WatchConfig()
 	viper.OnConfigChange(func(e fsnotify.Event) {
-		log.Println("Config file has changed: ", e.Name)
+		logger.AppLogger.Infof("Config file has changed from %s with %s operation", e.Name, e.Op.String())
 	})
 	err = viper.Unmarshal(&config)
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 }
 
 func GetViper() *Config {

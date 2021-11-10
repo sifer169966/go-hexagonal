@@ -1,3 +1,0 @@
-app:
-  port: APP_PORT
-  debug: APP_DEBUG

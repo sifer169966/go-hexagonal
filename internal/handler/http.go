@@ -10,10 +10,10 @@ import (
 
 type HttpHandler struct {
 	svc        port.Service
-	validators validators.Validators
+	validators validators.Validator
 }
 
-func NewHttp(svc port.Service, validators validators.Validators) *HttpHandler {
+func NewHttp(svc port.Service, validators validators.Validator) *HttpHandler {
 	return &HttpHandler{
 		svc:        svc,
 		validators: validators,
