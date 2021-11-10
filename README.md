@@ -18,8 +18,9 @@
 │   │   └── service         # The business logic of the application.
 │   │
 │   ├── handler             # The handlers, to handle the incoming requests.
-│   └── repostiory          # The repositories such as Database, a microservice API exposed via gRPC or REST, or just a simple CSV file. 
-│
+│   └── repostiory          # The repositories such as Database, a microservice API exposed via gRPC or REST, or just a simple CSV file.
+|
+│── mocks                   # mocking an interface to do a unit testing
 ├── pkg                     # utility packages.
 └── protocol                # The protocols to serve for client.
 ```
@@ -29,6 +30,6 @@
 
 Here is the example to run the application on your local machine
 
-```make serve-rest```
+```make start```
 
-the command above is an example to make the application to serve REST
+the command above is an example to make the application to serve REST protocol
