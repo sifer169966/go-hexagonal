@@ -1,7 +1,7 @@
 GO_BINARY_NAME=go-hex # <- change this value to your binary name
 VERSION=$(shell git describe --tags || git rev-parse --short HEAD || echo "unknown version")
-LDFLAGS+= -X "./cmd/cmds.Version=$(VERSION)"
-LDFLAGS+= -X "./cmd/cmds.GoVersion=$(shell go version | sed -r 's/go version go(.*)\ .*/\1/')"
+LDFLAGS+= -X "hexagonal-template/cmd/cmds.Version=$(VERSION)"
+LDFLAGS+= -X "hexagonal-template/cmd/cmds.GoVersion=$(shell go version | sed -r 's/go version go(.*)\ .*/\1/')"
 
 # Environment injection to use in local development.
 inject-env:
@@ -49,5 +49,3 @@ test:
 .PHONY: clean
 clean:
 	@rm -rf $(GO_BINARY_NAME) ./vendor
-
-	
