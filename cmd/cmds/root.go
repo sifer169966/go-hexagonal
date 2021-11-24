@@ -1,8 +1,6 @@
 package cmds
 
 import (
-	"hexagonal-template/protocol"
-
 	"github.com/spf13/cobra"
 )
 
@@ -32,12 +30,4 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	cobra.CheckErr(rootCmd.Execute())
-}
-
-func init() {
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-	rootCmd.PersistentFlags().StringVarP(&protocol.CfgPath, "config", "c", ".", "config file path")
 }

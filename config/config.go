@@ -1,47 +1,46 @@
 package config
 
 import (
-	"log"
+	"strings"
 
 	"hexagonal-template/pkg/logger"
 
-	"github.com/fsnotify/fsnotify"
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
+	"github.com/kelseyhightower/envconfig"
 )
 
 // ",squash" will ignore mapstructure for that field
 
 type Config struct {
-	App appConfig `mapstructure:",squash"`
+	App appConfig
 }
 
 type appConfig struct {
-	HTTPPort string `mapstructure:"APP_HTTP_PORT"`
-	Env      string `mapstructure:"APP_ENV"`
+	HTTPPort string `envconfig:"APP_HTTP_PORT" default: 8443`
+	Env      string `envconfig:"APP_ENV" default: staging`
 }
 
 var config Config
 
-func Init(cfgPath string) {
+// Init is application config initialization ...
+func Init() {
+	err := godotenv.Load()
+	if err != nil {
+		envFileNotFound := strings.Contains(err.Error(), "no such file or directory")
+		if !envFileNotFound {
+			logger.Infof("read config error: %v", err)
+		} else {
+			logger.Info("use environment from OS")
+		}
+	}
+	err = envconfig.Process("", &config)
+	if err != nil {
+		logger.Fatalf("parse config error: %v", err)
+	}
 
-	viper.SetConfigName(".env")
-	viper.AddConfigPath(".")
-	viper.SetConfigType("env")
-	viper.AutomaticEnv()
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(err)
-	}
-	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		logger.AppLogger.Infof("Config file has changed from %s with %s operation", e.Name, e.Op.String())
-	})
-	err = viper.Unmarshal(&config)
-	if err != nil {
-		log.Fatalln(err)
-	}
 }
 
-func GetViper() *Config {
+// GetConfig is use for export private variable which is config ...
+func GetConfig() *Config {
 	return &config
 }

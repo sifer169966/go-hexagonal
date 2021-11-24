@@ -3,14 +3,7 @@ VERSION=$(shell git describe --tags || git rev-parse --short HEAD || echo "unkno
 LDFLAGS+= -X "hexagonal-template/cmd/cmds.Version=$(VERSION)"
 LDFLAGS+= -X "hexagonal-template/cmd/cmds.GoVersion=$(shell go version | sed -r 's/go version go(.*)\ .*/\1/')"
 
-# Environment injection to use in local development.
-inject-env:
-ifneq ("$(wildcard .env)","")
-	$(eval -include .env) \
-	$(eval export $(shell sed 's/=.*//' .env))
-else
- 	$(warning ".env file not found.") 
-endif
+
 
 # Always turn on go module when use `go` command.
 GO := GO111MODULE=on go
@@ -38,7 +31,7 @@ ci:
 build:
 	$(GO) build -mod=vendor -ldflags '$(LDFLAGS)' -a -v -o $(GO_BINARY_NAME) ./cmd/main.go
 
-start: inject-env
+start:
 	go run ./cmd/main.go serve-rest
 
 .PHONY: test

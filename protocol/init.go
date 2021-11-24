@@ -7,9 +7,6 @@ import (
 	"hexagonal-template/pkg/validators"
 )
 
-// export `CfgPath` to set config path from cmd/root.go
-var CfgPath string
-
 var app *application
 
 type application struct {
@@ -25,7 +22,7 @@ type packages struct {
 
 func init() {
 	logger.Init()
-	config.Init(CfgPath)
+	config.Init()
 	packages := packages{
 		validator: validators.New(),
 	}

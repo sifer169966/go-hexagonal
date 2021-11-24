@@ -49,7 +49,7 @@ func ServeREST() error {
 		}
 		os.Exit(0)
 	}()
-	err := app.Listen(":" + config.GetViper().App.HTTPPort)
+	err := app.Listen(":" + config.GetConfig().App.HTTPPort)
 	if err != nil {
 		return err
 	}
