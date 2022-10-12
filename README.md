@@ -11,6 +11,7 @@
 ├── build                   # Build files for instance Dockerfile.
 ├── cmd                     # Application entry point
 ├── config                  # Application configuration
+├── intrastructure          # Establish a connection to an infrastructure such as DB connection, AMQP server
 ├── internal                # Golang's standard internal package
 │   ├── core     
 │   │   ├── domain          # The models' structure and rules for the application.
