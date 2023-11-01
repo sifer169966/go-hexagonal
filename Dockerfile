@@ -44,6 +44,16 @@ RUN apk add --no-cache --update ca-certificates \
 # Copy App binary to image
 COPY --from=builder /app/go-hex /app/cmd/
 
+RUN chmod +x /app/cmd/go-hex
+
+ARG NONROOT_GROUP=nonroot-group
+ARG NONROOT_USER=nonroot-user
+ARG USER_ID=20000
+
+RUN addgroup -S $NONROOT_GROUP && adduser -S -u $USER_ID $NONROOT_USER -G $NONROOT_GROUP
+
+USER $NONROOT_USER:$NONROOT_GROUP
+
 WORKDIR /app
 
 CMD ["cmd/go-hex", "serve-rest"]
